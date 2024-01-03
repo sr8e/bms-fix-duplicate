@@ -106,13 +106,28 @@ def concat(folder_path, dry_run, quiet):
                 src_dir = dup_path.parent
                 dst_dir = primary.parent
                 try:
-                    if not dry_run:
-                        shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
-                        shutil.rmtree(src_dir)
-                    if not quiet:
-                        bar.write(
-                            style(f"I: {src_dir} merged to {dst_dir}", OutputLevel.INFO)
-                        )
+                    if src_dir == dst_dir:
+                        # same file in same folder
+                        if not dry_run:
+                            dup_path.unlink()
+                        if not quiet:
+                            bar.write(
+                                style(
+                                    f"I: {dup_path} removed as the same file exists in the same folder.",
+                                    OutputLevel.INFO,
+                                )
+                            )
+                    else:
+                        if not dry_run:
+                            shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
+                            shutil.rmtree(src_dir)
+                        if not quiet:
+                            bar.write(
+                                style(
+                                    f"I: {src_dir} merged to {dst_dir}",
+                                    OutputLevel.INFO,
+                                )
+                            )
                 except (shutil.Error, PermissionError):
                     bar.write(
                         style(
