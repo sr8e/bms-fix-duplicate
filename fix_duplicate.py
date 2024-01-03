@@ -81,11 +81,12 @@ def concat(folder_path, dry_run, quiet):
     print(f"I: Found {total_len} duplicated charts.")
     denied_set = set()
 
-    with tqdm(
-        total=total_len,
-        unit="file",
-        bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed} eta. {remaining}, {rate_fmt}{postfix}]",
-    ) as bar:
+    tqdm_kwargs = {
+        "total": total_len,
+        "unit": "file",
+        "bar_format": "{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed} eta. {remaining}, {rate_fmt}{postfix}]",
+    }
+    with tqdm(**tqdm_kwargs) as bar:
         for hash, paths in songs.items():
             primary = find_first_relative(paths, root_folders)
 
